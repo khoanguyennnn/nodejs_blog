@@ -1,14 +1,14 @@
 const Blog = require('../models/Blog');
-const {mongooseToObject} = require('../../util/mongoose')
+const { mongooseToObject } = require('../../util/mongoose');
 
 class PhoneController {
     // [GET] /phones/:slug
     show(req, res, next) {
-        Blog.findOne({slug: req.params.slug})
-            .then(phone => {
-                res.render('phones/show', {phone: mongooseToObject(phone)})
+        Blog.findOne({ slug: req.params.slug })
+            .then((phone) => {
+                res.render('phones/show', { phone: mongooseToObject(phone) });
             })
-            .catch(next)
+            .catch(next);
     }
 
     // [GET] /phones/create
@@ -21,30 +21,36 @@ class PhoneController {
         // res.json(req.body)
 
         const phone = new Blog(req.body);
-        phone.save()
-            .then(() =>  res.redirect('/'))
-            .catch(err => {
-
-            })        
+        phone
+            .save()
+            .then(() => res.redirect('/'))
+            .catch((err) => {});
     }
 
     // [GET] /phones/:id/edit
     edit(req, res, next) {
         Blog.findById(req.params.id)
-            .then(phone => res.render('phones/edit', {
-                phone: mongooseToObject(phone)
-            }))
+            .then((phone) =>
+                res.render('phones/edit', {
+                    phone: mongooseToObject(phone),
+                }),
+            )
             .catch(next);
-        
     }
 
     // [PUT] /phones/:id/
     update(req, res, next) {
-        Blog.updateOne({_id: req.params.id}, req.body)
+        Blog.updateOne({ _id: req.params.id }, req.body)
             .then(() => res.redirect('/me/stored/products'))
             .catch(next);
     }
 
+    // [DELETE] /phones/:id/
+    destroy(req, res, next) {
+        Blog.deleteOne({ _id: req.params.id })
+            .then(() => res.redirect('back'))
+            .catch(next);
+    }
 }
 
 module.exports = new PhoneController();

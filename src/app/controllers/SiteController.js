@@ -1,5 +1,5 @@
 const Blog = require('../models/Blog');
-const {multipleMongooseToObject} = require('../../util/mongoose')
+const { multipleMongooseToObject } = require('../../util/mongoose');
 
 class SiteController {
     // [GET] /
@@ -7,8 +7,8 @@ class SiteController {
         Blog.find({})
             .then((blogs) => {
                 res.render('home', {
-                    blogs: multipleMongooseToObject(blogs)
-                })
+                    blogs: multipleMongooseToObject(blogs),
+                });
             })
             .catch(next);
     }
