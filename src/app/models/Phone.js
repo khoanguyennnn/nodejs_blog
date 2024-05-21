@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
-const slug = require('mongoose-slug-generator');
-
-mongoose.plugin(slug);
+const slug = require('mongoose-slug-updater');
+const mongooseDelete = require('mongoose-delete');
 
 const Schema = mongoose.Schema;
 
-const Blog = new Schema(
+const Phone = new Schema(
     {
         image: {
             type: String,
@@ -22,4 +21,11 @@ const Blog = new Schema(
     },
 );
 
-module.exports = mongoose.model('Blog', Blog);
+// Add plugin
+mongoose.plugin(slug);
+Phone.plugin(mongooseDelete, {
+    deletedAt: true,
+    overrideMethods: 'all',
+});
+
+module.exports = mongoose.model('Phone', Phone);

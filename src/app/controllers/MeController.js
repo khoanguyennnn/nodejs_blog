@@ -1,13 +1,30 @@
-const Blog = require('../models/Blog');
+const Phone = require('../models/Phone');
 const { multipleMongooseToObject } = require('../../util/mongoose');
 
 class MeController {
     // [GET] /me/stored/products
     storedProducts(req, res, next) {
-        Blog.find({})
-            .then((phones) =>
+        Promise.all([
+            Phone.find({}),
+            Phone.countDocumentsWithDeleted({ deleted: true }),
+        ])
+            .then(([phones, deletedCount]) =>
                 res.render('me/stored-products', {
+                    deletedCount,
                     phones: multipleMongooseToObject(phones),
+                }),
+            )
+            .catch(next);
+    }
+
+    // [GET] /me/trash/products
+    trashProducts(req, res, next) {
+        Phone.findWithDeleted({ deleted: true })
+            .lean()
+            .then((phones) =>
+                res.render('me/trash-products', {
+                    // phones: multipleMongooseToObject(phones),
+                    phones,
                 }),
             )
             .catch(next);

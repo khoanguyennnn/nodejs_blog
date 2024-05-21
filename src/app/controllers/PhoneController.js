@@ -1,10 +1,10 @@
-const Blog = require('../models/Blog');
+const Phone = require('../models/Phone');
 const { mongooseToObject } = require('../../util/mongoose');
 
 class PhoneController {
     // [GET] /phones/:slug
     show(req, res, next) {
-        Blog.findOne({ slug: req.params.slug })
+        Phone.findOne({ slug: req.params.slug })
             .then((phone) => {
                 res.render('phones/show', { phone: mongooseToObject(phone) });
             })
@@ -20,16 +20,16 @@ class PhoneController {
     store(req, res, next) {
         // res.json(req.body)
 
-        const phone = new Blog(req.body);
+        const phone = new Phone(req.body);
         phone
             .save()
-            .then(() => res.redirect('/'))
+            .then(() => res.redirect('/me/stored/products'))
             .catch((err) => {});
     }
 
     // [GET] /phones/:id/edit
     edit(req, res, next) {
-        Blog.findById(req.params.id)
+        Phone.findById(req.params.id)
             .then((phone) =>
                 res.render('phones/edit', {
                     phone: mongooseToObject(phone),
@@ -40,14 +40,28 @@ class PhoneController {
 
     // [PUT] /phones/:id/
     update(req, res, next) {
-        Blog.updateOne({ _id: req.params.id }, req.body)
+        Phone.updateOne({ _id: req.params.id }, req.body)
             .then(() => res.redirect('/me/stored/products'))
             .catch(next);
     }
 
     // [DELETE] /phones/:id/
     destroy(req, res, next) {
-        Blog.deleteOne({ _id: req.params.id })
+        Phone.delete({ _id: req.params.id })
+            .then(() => res.redirect('back'))
+            .catch(next);
+    }
+
+    // [DELETE] /phones/:id/force
+    forceDestroy(req, res, next) {
+        Phone.deleteOne({ _id: req.params.id })
+            .then(() => res.redirect('back'))
+            .catch(next);
+    }
+
+    // [PATCH] /phones/:id/restore
+    restore(req, res, next) {
+        Phone.restore({ _id: req.params.id })
             .then(() => res.redirect('back'))
             .catch(next);
     }

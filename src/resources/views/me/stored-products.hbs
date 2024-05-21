@@ -1,30 +1,41 @@
 <div class="mt-4">
+  <div>
     <h3>My products</h3>
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name Product</th>
-                <th scope="col">Video ID</th>
-                <th scope="col" colspan="2">Created At</th>
-            </tr>
-        </thead>
-        
-        <tbody>
-            {{#each phones}}
-            <tr>
-                <th scope="row">{{sum  @index 1}}</th>
-                <td>{{this.title}}</td>
-                <td>{{this.videoId}}</td>
-                <td>{{this.createdAt}}</td>
-                <td>
-                    <a href="/phones/{{this._id}}/edit" class="btn btn-link">Sửa</a>
-                    <a href="" class="btn btn-link" data-toggle="modal" data-bs-toggle="modal" data-bs-target="#deleteProductModal" data-id="{{this._id}}">Xóa</a>
-                </td>
-            </tr>
-            {{/each}}
-        </tbody>
-    </table>
+    <a href="/me/trash/products">Recycle Bin ({{deletedCount}})</a>
+  </div>
+  <table class="table">
+      <thead>
+          <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name Product</th>
+              <th scope="col">Video ID</th>
+              <th scope="col" colspan="2">Created At</th>
+          </tr>
+      </thead>
+      
+      <tbody>
+          {{#each phones}}
+          <tr>
+              <th scope="row">{{sum  @index 1}}</th>
+              <td>{{this.title}}</td>
+              <td>{{this.videoId}}</td>
+              <td>{{this.createdAt}}</td>
+              <td>
+                  <a href="/phones/{{this._id}}/edit" class="btn btn-link">Edit</a>
+                  <a href="" class="btn btn-link" data-toggle="modal" data-bs-toggle="modal" data-bs-target="#deleteProductModal" data-id="{{this._id}}">Delete</a>
+              </td>
+          </tr>
+          {{else}}
+          <tr>
+            <td colspan="5" class="text-center">
+              You didn't add any product yet. 
+              <a href="/phones/create">Add product</a>
+            </td>
+          </tr>
+
+          {{/each}}
+      </tbody>
+  </table>
 </div>
 
 {{!-- Confirm delete --}}
