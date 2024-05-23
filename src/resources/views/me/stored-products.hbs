@@ -1,21 +1,41 @@
-<div class="mt-4">
+<form class="mt-4" name="container-form" method="POST" action="/phones/handle-form-action" >
   <div>
     <h3>My products</h3>
     <a href="/me/trash/products">Recycle Bin ({{deletedCount}})</a>
+    <div class="mt-4 d-flex align-items-center">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="checkbox-all">
+        <label class="form-check-label" for="checkbox-all">
+          Select all
+        </label>
+      </div>
+      <select class="form-select form-select-sm checkbox-select-all-option" name="action" required>
+        <option selected>Select action</option>
+        <option value="delete">Delete</option>
+      </select>
+      <button class="btn btn-primary btn-sm check-all-submit-btn disabled">
+        Action
+      </button>
+    </div>
   </div>
   <table class="table">
       <thead>
           <tr>
+              <th scope="col"></th>
               <th scope="col">#</th>
               <th scope="col">Name Product</th>
               <th scope="col">Video ID</th>
               <th scope="col" colspan="2">Created At</th>
           </tr>
       </thead>
-      
       <tbody>
           {{#each phones}}
           <tr>
+              <td>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="productIds[]" value="{{this._id}}">
+                </div>
+              </td>
               <th scope="row">{{sum  @index 1}}</th>
               <td>{{this.title}}</td>
               <td>{{this.videoId}}</td>
@@ -36,7 +56,7 @@
           {{/each}}
       </tbody>
   </table>
-</div>
+</form>
 
 {{!-- Confirm delete --}}
 <div class="modal" id="deleteProductModal" tabindex="-1">
@@ -63,6 +83,10 @@
 <script>
     var productId;
     var deleteForm = document.forms['delete-product-form'];
+    var checkBoxAll = $('#checkbox-all');
+    var productItemCheckBox = $('input[name="productIds[]"]');
+    var checkAllSubmitBtn = $('.check-all-submit-btn');
+    var containerForm = document.forms['container-form'];
 
     var deleteProductModal = document.getElementById('deleteProductModal')
     var btnDeleteProduct = document.getElementById("btn-delete-product");
@@ -78,5 +102,50 @@
         deleteForm.action = '/phones/' + productId + '?_method=DELETE';
         deleteForm.submit();
     }
+  
+    //Check box all clicked
+    checkBoxAll.change(function () {
+      var isCheckedAll = $(this).prop('checked');
+      productItemCheckBox.prop('checked', isCheckedAll);
+      renderCheckAllSubmitButton();
+    })
+
+    // Product checkbox change
+    productItemCheckBox.change(function() {
+      var isCheckedAll = productItemCheckBox.length === $('input[name="productIds[]"]:checked').length;
+      checkBoxAll.prop('checked', isCheckedAll)
+      renderCheckAllSubmitButton();
+    })
+
+    // Check all button submit
+    checkAllSubmitBtn.click(function(e) {
+      e.preventDefault();
+
+      var isSubmittable = !$(this).hasClass('disabled');
+
+      if(isSubmittable){
+        containerForm.submit();
+      }
+    })
+
+    checkAllSubmitBtn.on('submit', function(e) {
+      var isSubmittable = !$(this).hasClass('disabled');
+
+      if(!isSubmittable){
+        e.preventDefault();
+      }
+    })
+
+    // Render disable button
+    function renderCheckAllSubmitButton() {
+      var checkedCount = $('input[name="productIds[]"]:checked').length;
+
+      if(checkedCount > 0) {
+        checkAllSubmitBtn.removeClass('disabled')
+      } else {
+        checkAllSubmitBtn.addClass('disabled')
+      }
+    }
+
 
 </script>

@@ -65,6 +65,21 @@ class PhoneController {
             .then(() => res.redirect('back'))
             .catch(next);
     }
+
+    // [POST] /phones/handle-form-action
+    handleFormAction(req,res, next){
+        switch (req.body.action) {
+            case 'delete':
+                Phone.delete({ _id: {$in: req.body.productIds} })
+                    .then(() => res.redirect('back'))
+                    .catch(next);
+                break;
+        
+            default:
+                res.json({message : 'Action is invalid'});
+                break;
+        }
+    }
 }
 
 module.exports = new PhoneController();
